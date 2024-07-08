@@ -1,0 +1,15 @@
+Origin: PhoneBo.cx
+Label: PhoneBo.cx
+Suite: stable
+Codename: phonebocx-__DISTRO__
+Version: 3.0
+Architectures: amd64 source
+Components: main
+UDebComponents: main
+Description: PhoneBocx __DISTRO__ Repository
+SignWith: __SIGNINGKEY__
+DebOverride: override
+UDebOverride: override
+DscOverride: srcoverride
+
+
