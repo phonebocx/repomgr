@@ -3,6 +3,7 @@ DISTRO=bookworm
 DNAME=reprepro
 REPO=$(shell pwd)/repo/$(DISTRO)
 PUBKEY=$(REPO)/phonebocx.gpg.key
+WEBROOTPUBKEY=/var/www/html/phonebocx.gpg.key
 SRCKEY=secret/phonebocx.signing.key
 INCOMING=$(shell pwd)/incoming
 ARCHIVE=$(shell pwd)/archive
@@ -18,7 +19,7 @@ shell: .dockerimg
 	docker run -it -w /depot $(DPARAMS) bash
 
 .PHONY: repo
-repo: $(REPO)/conf/distributions $(REPO)/phonebocx.sources $(REPO)/conf/override | $(INCOMING) $(ARCHIVE)
+repo: $(WEBROOTPUBKEY) $(REPO)/conf/distributions $(REPO)/phonebocx.sources $(REPO)/conf/override | $(INCOMING) $(ARCHIVE)
 	@DEBS=$(wildcard $(INCOMING)/*deb); if [ "$$DEBS" ]; then \
 		echo "Processing '$$DEBS'"; \
 		docker run -it -w /depot $(DPARAMS) ./import.sh; \
@@ -48,7 +49,7 @@ $(REPO)/conf/distributions: templates/distributions.template docker/repo-signing
 $(REPO)/conf/override: override
 	@cp $< $@
 
-$(PUBKEY): docker/repo-signing-key-fingerprint
+$(WEBROOTPUBKEY) $(PUBKEY): docker/repo-signing-key-fingerprint
 	@gpg --export -a --export-options export-minimal $(shell cat $<) > $@
 
 $(REPO)/phonebocx.sources: templates/phonebocx.sources.template $(PUBKEY)

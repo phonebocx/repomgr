@@ -1,0 +1,12 @@
+{
+        log {
+                output file /var/log/caddy/caddy.log
+                # level debug
+        }
+}
+
+repo.phonebo.cx {
+	root * /var/www/html
+	file_server browse
+}
+

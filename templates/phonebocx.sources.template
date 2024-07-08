@@ -1,8 +1,8 @@
 Types: deb
-URIs: http://repo.phonebo.cx/debian/
+URIs: https://repo.phonebo.cx/debian/
 Suites: __DISTRO__
 Allow-Insecure: yes
 Allow-Weak: yes
 Allow-Downgrate-To-Insecure: yes
 Components: main
-PubkeyUrl: http://derp.the.herp/key
+PubkeyUrl: https://repo.phonebo.cx/phonebocx.gpg.key
