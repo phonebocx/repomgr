@@ -7,18 +7,18 @@ if [ ! "$DISTRO" ]; then
 	exit 1
 fi
 
-repo=/repo-$DISTRO
+repo=/debian
 archive=/archive-$DISTRO
 pdistro=phonebocx-$DISTRO
 
 reprepro -v -b $repo checkpool
 STATUS=$?
 if [ "$STATUS" -ne 0 ]; then
-  echo "Problems with the pool. You probably want to run something like:"
-  echo "  reprepro -v -b $repo remove $pdistro main __pakagename__"
-  echo "List of all packages, so you know which one to remove are:"
-  reprepro -v -b $repo list $pdistro
-  exit 1
+	echo "Problems with the pool. You probably want to run something like:"
+	echo "  reprepro -v -b $repo remove $pdistro main __pakagename__"
+	echo "List of all packages, so you know which one to remove are:"
+	reprepro -v -b $repo list $pdistro
+	exit 1
 fi
 
 reprepro -v -b $repo clearvanished
@@ -41,7 +41,7 @@ for dpkg in /incoming/*deb; do
 	base=$(basename $dpkg)
 
 	if [ "$src" ]; then
-		destfile=$repo/pool/main/${base:0:1}/$src/$base
+		destfile=$repo/pool/main/${src:0:1}/$src/$base
 	else
 		destfile=$repo/pool/main/${base:0:1}/$pkg/$base
 	fi
@@ -69,4 +69,3 @@ for dpkg in /incoming/*deb; do
 	#echo reprepro -v -b $repo ${aopt} -C main includedeb $pdistro $dpkg
 	reprepro -v -b $repo ${aopt} -C main includedeb $pdistro $dpkg && rm -f $dpkg
 done
-

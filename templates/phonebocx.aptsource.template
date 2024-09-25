@@ -1,0 +1,2 @@
+# Pubkey: https://repo.phonebo.cx/phonebocx.gpg.key
+deb https://repo.phonebo.cx/debian/ phonebocx-__DISTRO__ main

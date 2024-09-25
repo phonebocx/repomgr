@@ -8,5 +8,9 @@
 repo.phonebo.cx {
 	root * /var/www/html
 	file_server browse
+	encode zstd gzip
+
+	rewrite /latest.iso /latest.php?{query}&p={path}
+	php_fastcgi unix//run/php/php-fpm.sock
 }
 

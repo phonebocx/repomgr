@@ -1,13 +1,13 @@
 SHELL=/bin/bash
 DISTRO=bookworm
 DNAME=reprepro
-REPO=$(shell pwd)/repo/$(DISTRO)
+REPO=$(shell pwd)/repo
 PUBKEY=$(REPO)/phonebocx.gpg.key
 WEBROOTPUBKEY=/var/www/html/phonebocx.gpg.key
 SRCKEY=secret/phonebocx.signing.key
 INCOMING=$(shell pwd)/incoming
 ARCHIVE=$(shell pwd)/archive
-DPARAMS=-e DISTRO=$(DISTRO) -v $(shell pwd):/depot -v $(INCOMING):/incoming -v $(REPO):/repo-$(DISTRO) -v $(ARCHIVE):/archive-$(DISTRO) --rm $(DNAME)
+DPARAMS=-e DISTRO=$(DISTRO) -v $(shell pwd):/depot -v $(INCOMING):/incoming -v $(REPO):/debian -v $(ARCHIVE):/archive-$(DISTRO) --rm $(DNAME)
 
 export DISTRO INCOMING
 
@@ -19,8 +19,8 @@ shell: .dockerimg
 	docker run -it -w /depot $(DPARAMS) bash
 
 .PHONY: repo
-repo: $(WEBROOTPUBKEY) $(REPO)/conf/distributions $(REPO)/phonebocx.sources $(REPO)/conf/override | $(INCOMING) $(ARCHIVE)
-	@DEBS=$(wildcard $(INCOMING)/*deb); if [ "$$DEBS" ]; then \
+repo: $(WEBROOTPUBKEY) $(REPO)/conf/distributions $(REPO)/phonebocx.sources $(REPO)/phonebocx-$(DISTRO).apt.source $(REPO)/phonebocx.apt.source $(REPO)/conf/override | $(INCOMING) $(ARCHIVE)
+	@DEBS="$(wildcard $(INCOMING)/*deb)"; if [ "$$DEBS" ]; then \
 		echo "Processing '$$DEBS'"; \
 		docker run -it -w /depot $(DPARAMS) ./import.sh; \
 	else \
@@ -54,5 +54,8 @@ $(WEBROOTPUBKEY) $(PUBKEY): docker/repo-signing-key-fingerprint
 
 $(REPO)/phonebocx.sources: templates/phonebocx.sources.template $(PUBKEY)
 	@sed -e 's/__DISTRO__/$(DISTRO)/' < templates/phonebocx.sources.template > $@
+
+$(REPO)/phonebocx-$(DISTRO).apt.source $(REPO)/phonebocx.apt.source: templates/phonebocx.aptsource.template $(PUBKEY)
+	@sed -e 's/__DISTRO__/$(DISTRO)/' < templates/phonebocx.aptsource.template > $@
 	
 
